@@ -12,9 +12,15 @@ load_dotenv()
 
 DEEPSEEK_KEY = os.getenv("DEEPSEEK_API_KEY")
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
-CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+# CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 
 client = OpenAI(api_key=DEEPSEEK_KEY, base_url="https://api.deepseek.com")
+
+def get_subscribers():
+    raw_list = os.getenv("SUBSCRIBER_LIST", "")
+    subscriber_ids = [s.strip() for s in raw_list.split(",") if s.strip()]
+    print(subscriber_ids)
+    return subscriber_ids
 
 def get_article_content(url):
     try:
@@ -79,9 +85,16 @@ async def run_digest():
     )
 
     final_message = header + ai_summary + stats_footer
+    user_ids = get_subscribers()
 
     bot = Bot(token=TELEGRAM_TOKEN)
-    await bot.send_message(chat_id=CHAT_ID, text=final_message, parse_mode='HTML')
+    for user_id in user_ids:
+        try:
+            await bot.send_message(chat_id=user_id, text=final_message, parse_mode='Markdown')
+            # Small sleep to avoid Telegram rate limits (30 msgs/second)
+            await asyncio.sleep(0.05)
+        except Exception as e:
+            print(f"Failed to send to {user_id}: {e}")
 
 if __name__ == "__main__":
     asyncio.run(run_digest())
