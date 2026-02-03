@@ -19,7 +19,6 @@ client = OpenAI(api_key=DEEPSEEK_KEY, base_url="https://api.deepseek.com")
 def get_subscribers():
     raw_list = os.getenv("SUBSCRIBER_LIST", "")
     subscriber_ids = [s.strip() for s in raw_list.split(",") if s.strip()]
-    print(subscriber_ids)
     return subscriber_ids
 
 def get_article_content(url):
