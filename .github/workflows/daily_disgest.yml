@@ -1,9 +1,9 @@
 name: Daily AI Digest
 
 on:
-  schedule:
-    # 8:00 AM Singapore Time (Adjust for your timezone if necessary)
-    - cron: "0 0 * * *"
+  # schedule:
+  #   # 8:00 AM Singapore Time (Adjust for your timezone if necessary)
+  #   - cron: "0 0 * * *"
   workflow_dispatch:
 
 jobs:
